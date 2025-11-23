@@ -838,7 +838,7 @@ function endBattle(playerWon) {
         message.textContent = '你贏得了這場對戰！';
     } else {
         title.textContent = '戰敗';
-        title.style.background = 'linear-gradient(45deg, #666, #999)';
+        title.classList.add('defeat');
         message.textContent = '你輸掉了這場對戰...';
     }
 
