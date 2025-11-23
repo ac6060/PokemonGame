@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寶可夢對戰 | Pokémon Battle</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Room Setup Screen -->
+    <div id="room-screen" class="screen active">
+        <div class="room-container">
+            <h1 class="game-title">寶可夢對戰</h1>
+            <div class="room-options">
+                <button id="create-room-btn" class="room-btn">建立房間</button>
+                <button id="join-room-btn" class="room-btn">加入房間</button>
+            </div>
+            <div id="room-code-display" class="room-code hidden">
+                <p>房間代碼：</p>
+                <h2 id="room-code-text"></h2>
+                <p class="waiting-text">等待對手加入...</p>
+            </div>
+            <div id="room-join-input" class="room-join hidden">
+                <input type="text" id="room-code-input" placeholder="輸入房間代碼" maxlength="6">
+                <button id="join-submit-btn" class="submit-btn">確認</button>
+            </div>
+            <div id="connection-status" class="status-text"></div>
+        </div>
+    </div>
+
+    <!-- Team Selection Screen -->
+    <div id="team-screen" class="screen">
+        <div class="team-container">
+            <h2>選擇你的隊伍 (4隻寶可夢)</h2>
+            <div id="pokemon-grid" class="pokemon-grid"></div>
+            <div class="selected-team">
+                <h3>已選擇：<span id="selected-count">0</span>/4</h3>
+                <div id="selected-display" class="selected-display"></div>
+            </div>
+            <button id="confirm-team-btn" class="confirm-btn disabled" disabled>確認隊伍</button>
+            <div id="team-status" class="status-text"></div>
+        </div>
+    </div>
+
+    <!-- Battle Screen -->
+    <div id="battle-screen" class="screen">
+        <!-- Background Layer -->
+        <div id="battle-background" class="battle-background forest"></div>
+
+        <!-- Particle Effects Canvas -->
+        <canvas id="particle-canvas"></canvas>
+
+        <!-- Battle Arena -->
+        <div class="battle-arena">
+            <!-- Enemy Pokemon Section -->
+            <div class="pokemon-section enemy-section">
+                <div class="pokemon-info">
+                    <div class="name-level">
+                        <span id="enemy-name" class="pokemon-name">???</span>
+                        <span id="enemy-level" class="pokemon-level">Lv.50</span>
+                    </div>
+                    <div class="hp-bar-container">
+                        <div class="hp-label">HP</div>
+                        <div class="hp-bar">
+                            <div id="enemy-hp-fill" class="hp-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <span id="enemy-hp-text" class="hp-text">100/100</span>
+                    </div>
+                    <div id="enemy-types" class="type-badges"></div>
+                </div>
+                <div class="pokemon-sprite-container">
+                    <img id="enemy-sprite" class="pokemon-sprite enemy-sprite" src="" alt="Enemy Pokemon">
+                </div>
+            </div>
+
+            <!-- Player Pokemon Section -->
+            <div class="pokemon-section player-section">
+                <div class="pokemon-sprite-container">
+                    <img id="player-sprite" class="pokemon-sprite player-sprite" src="" alt="Player Pokemon">
+                </div>
+                <div class="pokemon-info">
+                    <div class="name-level">
+                        <span id="player-name" class="pokemon-name">???</span>
+                        <span id="player-level" class="pokemon-level">Lv.50</span>
+                    </div>
+                    <div class="hp-bar-container">
+                        <div class="hp-label">HP</div>
+                        <div class="hp-bar">
+                            <div id="player-hp-fill" class="hp-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <span id="player-hp-text" class="hp-text">100/100</span>
+                    </div>
+                    <div id="player-types" class="type-badges"></div>
+                </div>
+            </div>
+
+            <!-- Pokeball Counters -->
+            <div class="pokeball-counter enemy-balls">
+                <div class="pokeball active"></div>
+                <div class="pokeball active"></div>
+                <div class="pokeball active"></div>
+                <div class="pokeball active"></div>
+            </div>
+            <div class="pokeball-counter player-balls">
+                <div class="pokeball active"></div>
+                <div class="pokeball active"></div>
+                <div class="pokeball active"></div>
+                <div class="pokeball active"></div>
+            </div>
+        </div>
+
+        <!-- Dialogue Box -->
+        <div class="dialogue-box">
+            <div id="battle-message" class="battle-message"></div>
+            <div class="dialogue-arrow">▼</div>
+        </div>
+
+        <!-- Move Selection Menu -->
+        <div id="move-menu" class="move-menu hidden">
+            <div class="move-grid">
+                <button class="move-button" data-move="0">
+                    <span class="move-name">招式 1</span>
+                    <span class="move-type type-normal">一般</span>
+                </button>
+                <button class="move-button" data-move="1">
+                    <span class="move-name">招式 2</span>
+                    <span class="move-type type-normal">一般</span>
+                </button>
+                <button class="move-button" data-move="2">
+                    <span class="move-name">招式 3</span>
+                    <span class="move-type type-normal">一般</span>
+                </button>
+                <button class="move-button" data-move="3">
+                    <span class="move-name">招式 4</span>
+                    <span class="move-type type-normal">一般</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Turn Timer Display -->
+        <div id="timer-display" class="timer-display hidden">
+            <div class="timer-content">
+                <div id="timer-text" class="timer-text">等待對手...</div>
+                <div id="countdown" class="countdown">30</div>
+            </div>
+        </div>
+
+        <!-- Turn Indicator -->
+        <div id="turn-indicator" class="turn-indicator hidden">
+            <span id="turn-text">你的回合</span>
+        </div>
+    </div>
+
+    <!-- Victory/Defeat Screen Overlay -->
+    <div id="result-overlay" class="result-overlay hidden">
+        <div class="result-content">
+            <h1 id="result-title">勝利！</h1>
+            <p id="result-message">你贏得了這場對戰！</p>
+            <button id="new-battle-btn" class="room-btn">開始新對戰</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
