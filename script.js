@@ -130,7 +130,8 @@ async function fetchPokemonData(id) {
                 defense: data.stats[2].base_stat
             },
             moves: moves,
-            currentHp: data.stats[0].base_stat
+            currentHp: data.stats[0].base_stat,
+            maxHp: data.stats[0].base_stat
         };
     } catch (error) {
         console.error('Error fetching Pokemon:', error);
@@ -708,6 +709,11 @@ async function executeMove(move, isPlayerAttacking) {
             } else {
                 // Switch turn
                 switchTurn();
+            }
+
+            // Clear the current move from Firebase after execution
+            if (isPlayerAttacking) {
+                gameState.roomRef.child(`${gameState.playerRole}/currentMove`).remove();
             }
         }, 800);
     }, 600);
