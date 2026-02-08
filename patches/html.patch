@@ -1,0 +1,21 @@
+Index: index.html
+===================================================================
+--- index.html	
++++ index.html	
+@@ -157,6 +157,16 @@
+         <!-- Turn Indicator -->
+         <div id="turn-indicator" class="turn-indicator hidden">
+             <span id="turn-text">你的回合</span>
++        </div>
++        
++        <!-- Room Code Display -->
++        <div id="room-code-banner" class="room-code-banner">
++            <span>房間代碼：</span>
++            <span id="battle-room-code" class="room-code-label">------</span>
++        </div>
++        
++        <!-- Manual Reconnect Button -->
++        <button id="manual-reconnect-btn" class="manual-reconnect-btn hidden">斷線重連</button>
+         </div>
+     </div>
+ 
